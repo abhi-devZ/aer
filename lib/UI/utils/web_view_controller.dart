@@ -8,10 +8,8 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class WebViewer {
   late WebViewController _controller;
-  DateTime? lastNavigationTime;
   final ValueNotifier<double> progressLevel = ValueNotifier<double>(0.0);
   final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
-  final ValueNotifier<String?> searchUrl = ValueNotifier<String?>(null);
   WebViewer(context) {
     _initializeWebViewController(context);
   }
@@ -29,47 +27,18 @@ class WebViewer {
           },
           onPageStarted: (String url) {
             isLoading.value = true;
-            searchUrl.value = url;
             logger.e('Page started loading: $url');
           },
           onPageFinished: (String url) {
             isLoading.value = false;
-            searchUrl.value = url;
             logger.e('Page finished loading: $url');
           },
           onWebResourceError: (WebResourceError error) {},
           onNavigationRequest: (NavigationRequest request) {
-            debugPrint('Navigation requested to: ${request.url}');
-
-            // Check if this is a rapid subsequent navigation (within 500ms)
-            final now = DateTime.now();
-            if (lastNavigationTime != null) {
-              final timeDifference = now.difference(lastNavigationTime!);
-              if (timeDifference.inMilliseconds < 500) {
-                debugPrint('Blocked rapid subsequent navigation');
-                return NavigationDecision.prevent;
-              }
+            if (request.url.startsWith('https://www.youtube.com/')) {
+              return NavigationDecision.prevent;
             }
-            lastNavigationTime = now;
-
-            // Parse URLs for comparison
-            final Uri requestUri = Uri.parse(request.url);
-            final Uri currentUri = Uri.parse(searchUrl.value??"");
-            const String allowedDomain = "asuracomic.net";
-
-            // Allow navigation only if:
-            // 1. It's to the allowed domain
-            // 2. It's a relative URL (same domain)
-            // 3. It's a subdomain of the allowed domain
-            if (requestUri.host == allowedDomain ||
-                requestUri.host.endsWith('.$allowedDomain') ||
-                request.url.startsWith('/')) {
-              debugPrint('Allowing navigation to: ${request.url}');
-              return NavigationDecision.navigate;
-            }
-
-            debugPrint('Blocked navigation to: ${request.url}');
-            return NavigationDecision.prevent;
+            return NavigationDecision.navigate;
           },
         ),
       )
