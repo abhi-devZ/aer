@@ -13,18 +13,18 @@ GlobalKey<NavigatorState>? navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-  // SystemChrome.setSystemUIOverlayStyle(
-  //   const SystemUiOverlayStyle(
-  //     statusBarColor: Colors.redAccent,
-  //     systemNavigationBarColor: Colors.black,
-  //   ),
-  // );
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.black54,
+    statusBarIconBrightness: Brightness.light, // Light icons for dark gradient
+    statusBarBrightness: Brightness.dark, // Dark background (iOS)
+  ));
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual,overlays: [SystemUiOverlay.top]
+  );
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-
   const MyApp({super.key});
 
   @override
@@ -32,7 +32,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String initialRoute = '/';
   late SharedPreferences _prefs;
 
   @override
@@ -77,4 +76,6 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+
 }
+

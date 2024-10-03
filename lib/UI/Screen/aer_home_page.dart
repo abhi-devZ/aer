@@ -31,14 +31,10 @@ class AerHomePageState extends State<AerHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: true,
-        body: _pageView(),
-        bottomNavigationBar: _bottomNavigationBar(),
-      ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: _pageView(),
+      bottomNavigationBar: _bottomNavigationBar(),
     );
   }
 
@@ -55,8 +51,8 @@ class AerHomePageState extends State<AerHomePage> {
 
   Widget _hostingContainer(index) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 1,
-      height: MediaQuery.of(context).size.height * 1,
+      width: MediaQuery.sizeOf(context).width * 1,
+      height: MediaQuery.sizeOf(context).height * 1,
       child: pages[index],
     );
   }

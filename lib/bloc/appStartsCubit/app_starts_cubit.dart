@@ -1,3 +1,4 @@
+import 'package:aer/app_routes.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,11 +11,12 @@ class AppStartsCubit extends Cubit<AppStartsState> {
   Future<void> appOpen() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? initialRoute = prefs.getString('lastRoute');
-      if (initialRoute != null) {
+      String? route = prefs.getString('lastRoute');
+      if (initialRoute == '/test') {
+        emit(AppNavToPage(routeName: initialRoute));
+      } else if (route != null) {
         String? arguments = prefs.getString('arguments');
-        // emit(AppNavToPage(routeName: initialRoute, arguments: arguments));
-        emit(AppNavToPage(routeName: "/home"));
+        emit(AppNavToPage(routeName: route, arguments: arguments));
       } else {
         emit(AppNavToPage(routeName: "/home"));
       }

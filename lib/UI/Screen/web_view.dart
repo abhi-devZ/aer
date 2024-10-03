@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:aer/UI/Widget/loader.dart';
+import 'package:aer/UI/Widget/search_box.dart';
 import 'package:aer/UI/utils/constant.dart';
 import 'package:aer/UI/utils/web_view_controller.dart';
 import 'package:aer/bloc/appStartsCubit/app_starts_cubit.dart';
@@ -20,19 +24,57 @@ class WebView extends StatefulWidget {
 class _WebViewState extends State<WebView> {
   late WebViewer webViewer;
   final GlobalKey _globalKey = GlobalKey();
-  final _searchTextController = TextEditingController();
+  bool _isBottomSheetVisible = true;
+  double _lastScrollPosition = 0;
+  Timer? _scrollDebounce;
+
+  bool _isLoading = true;
 
   @override
   void initState() {
     webViewer = WebViewer(context);
     super.initState();
-    _searchTextController.text = widget.data;
-    onSubmitQuery();
+    onSubmitQuery(widget.data);
+    _initScrollListener();
+  }
+
+  void _initScrollListener() {
+    webViewer.webViewController.setOnScrollPositionChange(
+      (ScrollPositionChange change) {
+        // Debounce scroll events
+        if (_scrollDebounce?.isActive ?? false) _scrollDebounce!.cancel();
+        _scrollDebounce = Timer(const Duration(milliseconds: 50), () {
+          if (!mounted) return;
+
+          // Get current scroll position
+          final currentPosition = change.y;
+
+          // Calculate scroll direction and distance
+          final double delta = currentPosition - _lastScrollPosition;
+
+          // Update bottom sheet visibility based on scroll direction
+          if (delta > 50 && _isBottomSheetVisible) {
+            // Scrolling down - hide bottom sheet
+            setState(() {
+              _isBottomSheetVisible = false;
+            });
+          } else if (delta < -50 && !_isBottomSheetVisible) {
+            // Scrolling up - show bottom sheet
+            setState(() {
+              _isBottomSheetVisible = true;
+            });
+          }
+
+          // Update last scroll position
+          _lastScrollPosition = currentPosition;
+        });
+      },
+    );
   }
 
   @override
   void dispose() {
-    _searchTextController.dispose();
+    _scrollDebounce?.cancel();
     super.dispose();
   }
 
@@ -48,17 +90,9 @@ class _WebViewState extends State<WebView> {
         }
       },
       child: SafeArea(
-        top: false,
+        top: true,
         child: Scaffold(
           key: _globalKey,
-          // appBar: AppBar(
-          //   title: const Text('Flutter WebView example'),
-          //   // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
-          //   actions: <Widget>[
-          //     NavigationControls(webViewController: webViewer.webViewController),
-          //     SampleMenu(webViewController: webViewer.webViewController),
-          //   ],
-          // ),
           body: BlocConsumer<WebViewBloc, WebViewState>(
             listener: (context, state) {
               if (state is NewQueryLoadState) {
@@ -68,21 +102,15 @@ class _WebViewState extends State<WebView> {
             builder: (context, state) {
               return Stack(
                 children: [
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: kBottomNavigationBarHeight,
-                    child: WebViewWidget(
-                      controller: webViewer.webViewController,
-                    ),
+                  WebViewWidget(
+                    controller: webViewer.webViewController,
                   ),
                   Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
+                    left: 8,
+                    right: 8,
+                    bottom: 8,
                     child: _bottomAppBar(),
-                  )
+                  ),
                 ],
               );
             },
@@ -93,57 +121,33 @@ class _WebViewState extends State<WebView> {
   }
 
   Widget _bottomAppBar() {
-    return SizedBox(
-      height: kBottomNavigationBarHeight,
-      child: BottomAppBar(
-        child: TextFormField(
-          controller: _searchTextController,
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.only(left: 16.0, bottom: 2.0),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(50.0),
-              borderSide: const BorderSide(color: Colors.transparent),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(50.0),
-              borderSide: const BorderSide(color: Colors.transparent),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(50.0),
-              borderSide: const BorderSide(color: Colors.transparent),
-            ),
-            suffixIcon: GestureDetector(
-              onTap: () {
-                onSubmitQuery();
-              },
-              child: const Icon(
-                Icons.search_rounded,
-                size: 20,
-              ),
-            ),
-          ),
-          // style: const TextStyle(color: Colors.black),
-          cursorColor: Colors.white,
-          cursorWidth: 1.0,
-          cursorRadius: const Radius.circular(50.0),
-          onFieldSubmitted: (value) {
-            onSubmitQuery();
-          },
-          onTapOutside: (event) {
-            // constructSearchQueryUrl();
-            logger.e("onOutside");
+    return AnimatedSlide(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      offset: Offset(0, _isBottomSheetVisible ? 0 : 1),
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: _isBottomSheetVisible ? 1.0 : 0.0,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: webViewer.isLoading,
+          builder: (context, isLoading, child) {
+            return SearchBox(
+              searchTerm: widget.data,
+              isLoading: isLoading,
+              onSubmitTextField: (value) => onSubmitQuery(value),
+            );
           },
         ),
       ),
     );
   }
 
-  void onSubmitQuery() {
-    if (_searchTextController.text.isNotEmpty) {
+  void onSubmitQuery(searchQuery) {
+    if (searchQuery.isNotEmpty) {
       String route = "/webPageLoader";
-      String arguments = _searchTextController.text;
+      String arguments = searchQuery;
       context.read<AppStartsCubit>().appChangeRoute(route, arguments);
-      BlocProvider.of<WebViewBloc>(context).add(WebViewSearchEvent(searchQuery: _searchTextController.text));
+      BlocProvider.of<WebViewBloc>(context).add(WebViewSearchEvent(searchQuery: searchQuery));
     }
   }
 }

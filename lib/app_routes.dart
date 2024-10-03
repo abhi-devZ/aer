@@ -1,3 +1,4 @@
+import 'package:aer/UI/Screen/widget_test_page.dart';
 import 'package:aer/bloc/appStartsCubit/app_starts_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,10 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const AerHomePage(),
         );
+      case '/test':
+        return MaterialPageRoute(
+          builder: (_) => const WidgetTestPage(),
+        );
       case '/webPageLoader':
         final String data = settings.arguments as String;
         return MaterialPageRoute(
@@ -44,3 +49,6 @@ class AppRouter {
     }
   }
 }
+
+// String get initialRoute => '/test';
+String get initialRoute => '/';

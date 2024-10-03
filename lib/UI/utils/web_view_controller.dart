@@ -8,7 +8,8 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class WebViewer {
   late WebViewController _controller;
-
+  final ValueNotifier<double> progressLevel = ValueNotifier<double>(0.0);
+  final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
   WebViewer(context) {
     _initializeWebViewController(context);
   }
@@ -21,12 +22,15 @@ class WebViewer {
         NavigationDelegate(
           onProgress: (int progress) {
             // Update loading bar.
+            progressLevel.value = progress.toDouble();
             logger.e('WebView is loading (progress : $progress%)');
           },
           onPageStarted: (String url) {
+            isLoading.value = true;
             logger.e('Page started loading: $url');
           },
           onPageFinished: (String url) {
+            isLoading.value = false;
             logger.e('Page finished loading: $url');
           },
           onWebResourceError: (WebResourceError error) {},
