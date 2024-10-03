@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
         )
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Aer',
         themeMode: ThemeMode.dark,
         darkTheme: ThemeData(
           primarySwatch: Colors.blueGrey,
