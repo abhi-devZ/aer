@@ -63,12 +63,12 @@ class _MyAppState extends State<MyApp> {
           ),
           useMaterial3: true,
         ),
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          primarySwatch: Colors.blue,
-          brightness: Brightness.light,
-          useMaterial3: true,
-        ),
+        // theme: ThemeData(
+        //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        //   primarySwatch: Colors.blue,
+        //   brightness: Brightness.light,
+        //   useMaterial3: true,
+        // ),
         debugShowCheckedModeBanner: false,
         initialRoute: initialRoute,
         navigatorKey: navigatorKey,
