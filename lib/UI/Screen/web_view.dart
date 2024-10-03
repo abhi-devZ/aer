@@ -121,48 +121,33 @@ class _WebViewState extends State<WebView> {
   }
 
   Widget _bottomAppBar() {
-    return ValueListenableBuilder<bool>(
-      valueListenable: webViewer.isLoading,
-      builder: (context, isLoading, child) {
-        if(isLoading) {
-          _isBottomSheetVisible = true;
-        }
-        return AnimatedSlide(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          offset: Offset(0, _isBottomSheetVisible ? 0 : 1),
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: _isBottomSheetVisible ? 1.0 : 0.0,
-            child: ValueListenableBuilder<String?>(
-              valueListenable: webViewer.searchUrl,
-              builder: (context, url, child) {
-                  updateQuery(url);
-                return SearchBox(
-                  searchTerm: url ?? widget.data,
-                  isLoading: isLoading,
-                  onSubmitTextField: (value) => onSubmitQuery(value),
-                );
-              },
-            ),
-          ),
-        );
-      },
+    return AnimatedSlide(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      offset: Offset(0, _isBottomSheetVisible ? 0 : 1),
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: _isBottomSheetVisible ? 1.0 : 0.0,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: webViewer.isLoading,
+          builder: (context, isLoading, child) {
+            return SearchBox(
+              searchTerm: widget.data,
+              isLoading: isLoading,
+              onSubmitTextField: (value) => onSubmitQuery(value),
+            );
+          },
+        ),
+      ),
     );
   }
 
   void onSubmitQuery(searchQuery) {
     if (searchQuery.isNotEmpty) {
-      updateQuery(searchQuery);
-      BlocProvider.of<WebViewBloc>(context).add(WebViewSearchEvent(searchQuery: searchQuery));
-    }
-  }
-
-  updateQuery(searchQuery) {
-    if(searchQuery != null) {
       String route = "/webPageLoader";
       String arguments = searchQuery;
       context.read<AppStartsCubit>().appChangeRoute(route, arguments);
+      BlocProvider.of<WebViewBloc>(context).add(WebViewSearchEvent(searchQuery: searchQuery));
     }
   }
 }

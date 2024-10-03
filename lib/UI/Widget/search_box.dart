@@ -1,5 +1,4 @@
 import 'package:aer/UI/utils/constant.dart';
-import 'package:aer/helper/url_helper.dart';
 import 'package:flutter/material.dart';
 
 import 'gradient_shadow_container.dart';
@@ -24,10 +23,10 @@ class SearchBox extends StatefulWidget {
 
 class _SearchBoxState extends State<SearchBox> {
   final _controller = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
   @override
   void initState() {
     super.initState();
+    _controller.text = widget.searchTerm;
   }
 
   @override
@@ -37,7 +36,6 @@ class _SearchBoxState extends State<SearchBox> {
   }
   @override
   Widget build(BuildContext context) {
-    _controller.text = DomainHelper.extractBaseDomain(widget.searchTerm);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: AdvancedGradientShadowContainer(
@@ -55,7 +53,6 @@ class _SearchBoxState extends State<SearchBox> {
         ],
         child: TextFormField(
           controller: _controller,
-          focusNode: _focusNode,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(left: 16.0, bottom: 2.0),
             border: OutlineInputBorder(
@@ -91,7 +88,6 @@ class _SearchBoxState extends State<SearchBox> {
           },
           onTapOutside: (event) {
             // constructSearchQueryUrl();
-            _focusNode.unfocus();
             logger.e("onOutside");
           },
         ),
