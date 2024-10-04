@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-enum GradientShadowStyle { rotate, pulse, wave, bounce }
+enum GradientShadowStyle { none, rotate, pulse, wave, bounce }
 
 class AdvancedGradientShadowContainer extends StatefulWidget {
   final Widget child;
@@ -14,7 +14,6 @@ class AdvancedGradientShadowContainer extends StatefulWidget {
   final GradientShadowStyle style;
   final Curve curve;
   final bool pauseOnHover;
-  final bool hasGradient;
   final Color color;
 
   const AdvancedGradientShadowContainer(
@@ -31,10 +30,9 @@ class AdvancedGradientShadowContainer extends StatefulWidget {
       this.duration = const Duration(seconds: 3),
       this.shadowSpread = 20,
       this.shadowBlur = 30,
-      this.style = GradientShadowStyle.rotate,
+      this.style = GradientShadowStyle.none,
       this.curve = Curves.easeInOut,
       this.pauseOnHover = true,
-      this.hasGradient = false,
       this.color = Colors.white});
 
   @override
@@ -63,6 +61,8 @@ class _AdvancedGradientShadowContainerState extends State<AdvancedGradientShadow
 
   List<BoxShadow> _generateShadows(double animationValue) {
     switch (widget.style) {
+      case GradientShadowStyle.none:
+        return _noShadow;
       case GradientShadowStyle.rotate:
         return _rotatingGradientShadows(animationValue);
       case GradientShadowStyle.pulse:
@@ -73,6 +73,14 @@ class _AdvancedGradientShadowContainerState extends State<AdvancedGradientShadow
         return _bouncingGradientShadows(animationValue);
     }
   }
+
+  List<BoxShadow> get _noShadow => [
+        const BoxShadow(
+          color: Colors.white38,
+          blurRadius: 1,
+          spreadRadius: 1,
+        ),
+      ];
 
   List<BoxShadow> _rotatingGradientShadows(double animationValue) {
     return [
@@ -111,7 +119,8 @@ class _AdvancedGradientShadowContainerState extends State<AdvancedGradientShadow
           color: color.withOpacity(0.3),
           blurRadius: widget.shadowBlur,
           spreadRadius: widget.shadowSpread *
-              (0.8 + math.sin(animationValue * 2 * math.pi + widget.gradientColors.indexOf(color) * math.pi / 2) * 0.2),
+              (0.8 +
+                  math.sin(animationValue * 2 * math.pi + widget.gradientColors.indexOf(color) * math.pi / 2) * 0.2),
           offset: Offset.zero,
         ),
     ];
@@ -155,16 +164,9 @@ class _AdvancedGradientShadowContainerState extends State<AdvancedGradientShadow
             width: widget.width,
             height: widget.height,
             decoration: BoxDecoration(
-              color: widget.color,
-              borderRadius: BorderRadius.circular(50),
-              boxShadow: widget.hasGradient
-                  ? _generateShadows(_controller.value)
-                  : [
-                      BoxShadow(
-                        color: Colors.blueGrey.shade700,
-                      ),
-                    ],
-            ),
+                color: widget.color,
+                borderRadius: BorderRadius.circular(50),
+                boxShadow: _generateShadows(_controller.value)),
             child: widget.child,
           );
         },
