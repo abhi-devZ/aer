@@ -1,6 +1,7 @@
 import 'package:aer/UI/Widget/gradient_shadow_container.dart';
 import 'package:aer/UI/Widget/search_box.dart';
 import 'package:aer/UI/utils/web_view_controller.dart';
+import 'package:aer/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -14,13 +15,17 @@ class HomePage extends StatelessWidget {
       top: true,
       child: Scaffold(
         body: const Center(
-          child: AndroidChromeTabs(),
-          // child: Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 8.0),
-          //   child: SearchBox(
-          //     isLoading: false,
-          //   ),
-          // ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: SearchBox(
+              isLoading: false,
+            ),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            navigatorKey?.currentState!.pushReplacementNamed('/tabview');
+          },
         ),
       ),
     );
@@ -41,14 +46,14 @@ class TabData {
   }) : webViewer = WebViewer(context);
 }
 
-class AndroidChromeTabs extends StatefulWidget {
-  const AndroidChromeTabs({Key? key}) : super(key: key);
+class BrowserTabManager extends StatefulWidget {
+  const BrowserTabManager({Key? key}) : super(key: key);
 
   @override
-  State<AndroidChromeTabs> createState() => _AndroidChromeTabsState();
+  State<BrowserTabManager> createState() => _BrowserTabManagerState();
 }
 
-class _AndroidChromeTabsState extends State<AndroidChromeTabs> {
+class _BrowserTabManagerState extends State<BrowserTabManager> {
   List<TabData> tabs = [];
   int currentIndex = 0;
   bool showTabGrid = false;
@@ -269,13 +274,9 @@ class _AndroidChromeTabsState extends State<AndroidChromeTabs> {
                 : const SizedBox.shrink();
           },
         ),
-        Material(
-          child: SizedBox(
-            width: 200,
-            height: 450,
-            child: WebViewWidget(
-              controller: tabs[currentIndex].webViewer.webViewController,
-            ),
+        Expanded(
+          child: WebViewWidget(
+            controller: tabs[currentIndex].webViewer.webViewController,
           ),
         ),
       ],

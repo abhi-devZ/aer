@@ -9,7 +9,6 @@ import 'UI/screen/aer_home_page.dart';
 import 'UI/utils/constant.dart';
 import 'app_routes.dart';
 
-GlobalKey<NavigatorState>? navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

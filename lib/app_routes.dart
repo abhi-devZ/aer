@@ -3,11 +3,9 @@ import 'package:aer/UI/screen-2/home_page.dart';
 import 'package:aer/bloc/appStartsCubit/app_starts_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'UI/Screen/aer_home_page.dart';
 import 'UI/Screen/web_view.dart';
-import 'main.dart';
+
+GlobalKey<NavigatorState>? navigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
   Route generateRoute(RouteSettings settings) {
@@ -34,6 +32,10 @@ class AppRouter {
       case '/test':
         return MaterialPageRoute(
           builder: (_) => const WidgetTestPage(),
+        );
+      case '/tabview':
+        return MaterialPageRoute(
+          builder: (_) => const BrowserTabManager(),
         );
       case '/webPageLoader':
         final String data = settings.arguments as String;
