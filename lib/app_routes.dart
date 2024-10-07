@@ -1,4 +1,5 @@
 import 'package:aer/UI/Screen/widget_test_page.dart';
+import 'package:aer/UI/screen-2/browser_tab_manager.dart';
 import 'package:aer/UI/screen-2/home_page.dart';
 import 'package:aer/bloc/appStartsCubit/app_starts_cubit.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class AppRouter {
         );
       case '/home':
         return MaterialPageRoute(
-          builder: (_) => const HomePage(),
+          builder: (_) => const BrowserTabManager(),
         );
       case '/test':
         return MaterialPageRoute(

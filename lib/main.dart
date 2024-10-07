@@ -13,7 +13,7 @@ import 'app_routes.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.black54,
+    statusBarColor: Colors.black87,
     statusBarIconBrightness: Brightness.light, // Light icons for dark gradient
     statusBarBrightness: Brightness.dark, // Dark background (iOS)
   ));

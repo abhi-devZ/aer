@@ -34,6 +34,7 @@ class _SearchBoxState extends State<SearchBox> {
         onPressed: () {
           if (widget.onSubmitTextField != null) {
             onSubmitQuery();
+            _controller.clear();
           }
         },
         icon: const FaIcon(

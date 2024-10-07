@@ -33,12 +33,12 @@ class WebViewer {
             logger.e('Page started loading: $url');
             currentUrl.value = url;
             // Inject viewport meta tag for better scaling
-            _controller.runJavaScript('''
-            var meta = document.createElement('meta');
-            meta.name = 'viewport';
-            meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-            document.getElementsByTagName('head')[0].appendChild(meta);
-          ''');
+              _controller.runJavaScript('''
+              var meta = document.createElement('meta');
+              meta.name = 'viewport';
+              meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+              document.getElementsByTagName('head')[0].appendChild(meta);
+            ''');
           },
           onPageFinished: (String url) async {
             isLoading.value = false;
@@ -68,8 +68,7 @@ class WebViewer {
 
     if (_controller.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
-      (_controller.platform as AndroidWebViewController)
-        .setMediaPlaybackRequiresUserGesture(false);
+      (_controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
   }
 
@@ -79,6 +78,6 @@ class WebViewer {
     }
     _controller.loadRequest(Uri.parse(url));
   }
+
   WebViewController get webViewController => _controller;
 }
-
