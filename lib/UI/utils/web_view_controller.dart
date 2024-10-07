@@ -10,6 +10,9 @@ class WebViewer {
   late WebViewController _controller;
   final ValueNotifier<double> progressLevel = ValueNotifier<double>(0.0);
   final ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
+  final ValueNotifier<String> title = ValueNotifier<String>('');
+  final ValueNotifier<String> currentUrl = ValueNotifier<String>('');
+
   WebViewer(context) {
     _initializeWebViewController(context);
   }
@@ -28,10 +31,22 @@ class WebViewer {
           onPageStarted: (String url) {
             isLoading.value = true;
             logger.e('Page started loading: $url');
+            currentUrl.value = url;
+            // Inject viewport meta tag for better scaling
+              _controller.runJavaScript('''
+              var meta = document.createElement('meta');
+              meta.name = 'viewport';
+              meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+              document.getElementsByTagName('head')[0].appendChild(meta);
+            ''');
           },
-          onPageFinished: (String url) {
+          onPageFinished: (String url) async {
             isLoading.value = false;
-            logger.e('Page finished loading: $url');
+            currentUrl.value = url;
+            final pageTitle = await _controller.getTitle();
+            if (pageTitle != null) {
+              title.value = pageTitle;
+            }
           },
           onWebResourceError: (WebResourceError error) {},
           onNavigationRequest: (NavigationRequest request) {
@@ -57,24 +72,12 @@ class WebViewer {
     }
   }
 
-  WebViewController get webViewController => _controller;
-}
-
-class HistoryStack {
-  static const String HISTORY_KEY = 'browsing_history';
-
-  final List<String> _history = [];
-
-  Future<void> loadFromPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    final history = prefs.getStringList(HISTORY_KEY);
-    if (history != null) {
-      _history.addAll(history);
+  void loadUrl(String url) {
+    if (!url.startsWith('http')) {
+      url = 'https://$url';
     }
+    _controller.loadRequest(Uri.parse(url));
   }
 
-  Future<void> saveToPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(HISTORY_KEY, _history);
-  }
+  WebViewController get webViewController => _controller;
 }

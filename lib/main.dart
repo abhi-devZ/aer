@@ -9,12 +9,11 @@ import 'UI/screen/aer_home_page.dart';
 import 'UI/utils/constant.dart';
 import 'app_routes.dart';
 
-GlobalKey<NavigatorState>? navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.black54,
+    statusBarColor: Colors.black87,
     statusBarIconBrightness: Brightness.light, // Light icons for dark gradient
     statusBarBrightness: Brightness.dark, // Dark background (iOS)
   ));
