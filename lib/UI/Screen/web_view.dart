@@ -102,13 +102,9 @@ class _WebViewState extends State<WebView> {
             builder: (context, state) {
               return Stack(
                 children: [
-                  SizedBox(
-                    width: 200,
-                    height: 450,
-                    child: WebViewWidget(
+                   WebViewWidget(
                       controller: webViewer.webViewController,
                     ),
-                  ),
                   Positioned(
                     left: 8,
                     right: 8,

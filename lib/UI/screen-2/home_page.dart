@@ -60,22 +60,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 }
-
-class TabData {
-  final String title;
-  String url;
-  final Key key = UniqueKey();
-  final WebViewer webViewer;
-  String? favicon;
-
-  TabData({
-    required this.title,
-    required this.url,
-    required BuildContext context,
-  }) : webViewer = WebViewer(context);
-}
-
-
 //
 // PreferredSizeWidget _buildAppBar() {
 //   return AppBar(
