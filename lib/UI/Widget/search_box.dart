@@ -11,21 +11,17 @@ class SearchBox extends StatefulWidget {
   final bool hasLeading;
   final String? searchTerm;
   final OnSubmitCallback? onSubmitTextField;
+  final TextEditingController? controller;
 
-  const SearchBox({
-    super.key,
-    this.searchTerm,
-    this.isLoading = false,
-    this.onSubmitTextField,
-    this.hasLeading = false
-  });
+  const SearchBox(
+      {super.key, this.controller, this.searchTerm, this.isLoading = false, this.onSubmitTextField, this.hasLeading = false});
 
   @override
   State<SearchBox> createState() => _SearchBoxState();
 }
 
 class _SearchBoxState extends State<SearchBox> {
-  final _controller = TextEditingController();
+   TextEditingController? _controller;
   FocusNode _focusNode = FocusNode();
 
   GradientShadowStyle shadowStyle = GradientShadowStyle.none;
@@ -34,7 +30,6 @@ class _SearchBoxState extends State<SearchBox> {
         onPressed: () {
           if (widget.onSubmitTextField != null) {
             onSubmitQuery();
-            _controller.clear();
           }
         },
         icon: const FaIcon(
@@ -56,11 +51,11 @@ class _SearchBoxState extends State<SearchBox> {
   @override
   void initState() {
     super.initState();
-    if (widget.searchTerm != null) {
-      _controller.text = widget.searchTerm!;
-    }
-    if (widget.isLoading) {
-      shadowStyle = GradientShadowStyle.rotate;
+    updateSearchQuery();
+    updateState();
+    _controller = widget.controller;
+    if (widget.controller == null) {
+      _controller = TextEditingController();
     }
     _focusNode.addListener(() {
       if (!widget.isLoading) {
@@ -74,14 +69,28 @@ class _SearchBoxState extends State<SearchBox> {
     });
   }
 
+  updateState() {
+    if (widget.isLoading) {
+      shadowStyle = GradientShadowStyle.rotate;
+    } else {
+      shadowStyle = GradientShadowStyle.none;
+    }
+  }
+  updateSearchQuery() {
+    if (widget.searchTerm != null) {
+      _controller?.text = widget.searchTerm!;
+    }
+  }
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    updateState();
+    updateSearchQuery();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: AdvancedGradientShadowContainer(
@@ -134,8 +143,10 @@ class _SearchBoxState extends State<SearchBox> {
   }
 
   void onSubmitQuery() {
-    if (widget.onSubmitTextField != null && _controller.text.isNotEmpty) {
-      widget.onSubmitTextField!(_controller.text);
+    if(_controller != null) {
+      if (widget.onSubmitTextField != null && _controller!.text.isNotEmpty) {
+        widget.onSubmitTextField!(_controller!.text);
+      }
     }
   }
 }

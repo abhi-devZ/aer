@@ -15,18 +15,21 @@ class HomePage extends StatefulWidget {
   }) : super(key: key);
 
   String? get title => _HomePageState.titles[key];
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   static final Map<Key?, String> titles = {};
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     // ValueNotifier<String>
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -37,16 +40,13 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: SearchBox(
               isLoading: false,
+              controller: _controller,
               onSubmitTextField: (value) {
                 onSubmitQuery(value);
+                _controller.clear();
               },
             ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            navigatorKey?.currentState!.pushNamed('/tabview');
-          },
         ),
       ),
     );
@@ -55,6 +55,8 @@ class _HomePageState extends State<HomePage> {
   void onSubmitQuery(query) {
     if (query.isNotEmpty) {
       String route = "/webPageLoader";
+      print("==============================================");
+      print(query);
       context.read<AppStartsCubit>().appChangeRoute(route, query);
       Navigator.pushNamed(context, route, arguments: query);
     }

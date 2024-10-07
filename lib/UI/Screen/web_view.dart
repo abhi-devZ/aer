@@ -28,7 +28,7 @@ class _WebViewState extends State<WebView> {
   double _lastScrollPosition = 0;
   Timer? _scrollDebounce;
 
-  bool _isLoading = true;
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
@@ -80,6 +80,7 @@ class _WebViewState extends State<WebView> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.data);
     return WillPopScope(
       onWillPop: () async {
         if (await webViewer.webViewController.canGoBack()) {
@@ -102,15 +103,38 @@ class _WebViewState extends State<WebView> {
             builder: (context, state) {
               return Stack(
                 children: [
-                   WebViewWidget(
-                      controller: webViewer.webViewController,
-                    ),
+                  WebViewWidget(
+                    controller: webViewer.webViewController,
+                  ),
                   Positioned(
                     left: 8,
                     right: 8,
                     bottom: 8,
                     child: _bottomAppBar(),
                   ),
+                  // Positioned(
+                  //   bottom: 0,
+                  //   right: 0,
+                  //   width: 16,
+                  //   height: 48,
+                  //   child: AbsorbPointer(
+                  //     absorbing: true,
+                  //     child: GestureDetector(
+                  //       behavior: HitTestBehavior.opaque,
+                  //       // Important!
+                  //       onHorizontalDragStart: (_) {},
+                  //       onHorizontalDragUpdate: (_) {},
+                  //       onHorizontalDragEnd: (_) {},
+                  //       child: Container(
+                  //         height: 200,
+                  //         color: Colors.blue.withOpacity(0.2),
+                  //         child: const Center(
+                  //           child: Text('Navigation Blocked Here'),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               );
             },
@@ -134,6 +158,7 @@ class _WebViewState extends State<WebView> {
             return SearchBox(
               searchTerm: widget.data,
               isLoading: isLoading,
+              controller: _controller,
               onSubmitTextField: (value) => onSubmitQuery(value),
             );
           },
@@ -144,6 +169,7 @@ class _WebViewState extends State<WebView> {
 
   void onSubmitQuery(searchQuery) {
     if (searchQuery.isNotEmpty) {
+      webViewer.isLoading.value = true;
       String route = "/webPageLoader";
       String arguments = searchQuery;
       context.read<AppStartsCubit>().appChangeRoute(route, arguments);
