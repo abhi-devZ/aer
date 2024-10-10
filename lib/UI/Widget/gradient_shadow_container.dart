@@ -42,7 +42,7 @@ class AdvancedGradientShadowContainer extends StatefulWidget {
 class _AdvancedGradientShadowContainerState extends State<AdvancedGradientShadowContainer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  bool _isHovered = false;
+  bool isHovered = false;
 
   @override
   void initState() {
@@ -144,13 +144,17 @@ class _AdvancedGradientShadowContainerState extends State<AdvancedGradientShadow
     return MouseRegion(
       onEnter: (_) {
         if (widget.pauseOnHover) {
-          setState(() => _isHovered = true);
+          setState(() {
+            isHovered = true;
+          });
           _controller.stop();
         }
       },
       onExit: (_) {
         if (widget.pauseOnHover) {
-          setState(() => _isHovered = false);
+          setState(() {
+            isHovered = false;
+          });
           _controller.repeat();
         }
       },

@@ -1,10 +1,10 @@
 import 'package:aer/UI/Screen/widget_test_page.dart';
 import 'package:aer/UI/screen-2/browser_tab_manager.dart';
-import 'package:aer/UI/screen-2/home_page.dart';
 import 'package:aer/bloc/appStartsCubit/app_starts_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'UI/Screen/web_view.dart';
+import 'UI/testing-1/presistantWebView.dart';
 
 GlobalKey<NavigatorState>? navigatorKey = GlobalKey<NavigatorState>();
 
@@ -28,7 +28,7 @@ class AppRouter {
         );
       case '/home':
         return MaterialPageRoute(
-          builder: (_) => const BrowserTabManager(),
+          builder: (_) => const PersistentWebView(),
         );
       case '/test':
         return MaterialPageRoute(

@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:aer/UI/Widget/loader.dart';
 import 'package:aer/UI/Widget/search_box.dart';
-import 'package:aer/UI/utils/constant.dart';
 import 'package:aer/UI/utils/web_view_controller.dart';
 import 'package:aer/bloc/appStartsCubit/app_starts_cubit.dart';
 import 'package:aer/bloc/webViewBloc/web_view_bloc.dart';
@@ -10,15 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'demo.dart';
-
 class WebView extends StatefulWidget {
   final String data;
 
   const WebView({super.key, required this.data});
 
   @override
-  _WebViewState createState() => _WebViewState();
+  State<WebView> createState() => _WebViewState();
 }
 
 class _WebViewState extends State<WebView> {
@@ -80,7 +76,6 @@ class _WebViewState extends State<WebView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.data);
     return WillPopScope(
       onWillPop: () async {
         if (await webViewer.webViewController.canGoBack()) {

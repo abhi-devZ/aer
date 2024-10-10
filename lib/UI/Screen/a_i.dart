@@ -18,12 +18,6 @@ class AI extends StatelessWidget {
 class ShapePainter extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    var paint = Paint()
-      ..color = Colors.teal
-      ..strokeWidth = 5
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    var colors = [Colors.teal, Colors.red, Colors.blue, Colors.green];
 
     var path = Path();
     path.lineTo(0.0, 20.0);

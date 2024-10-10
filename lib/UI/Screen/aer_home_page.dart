@@ -1,9 +1,8 @@
 import 'package:aer/UI/Screen/a_i.dart';
+import 'package:flutter/material.dart';
 import 'package:aer/UI/Screen/shared.dart';
 import 'package:aer/UI/Screen/web_view_home.dart';
 import 'package:aer/UI/Widget/tab_count.dart';
-import 'package:aer/UI/utils/constant.dart';
-import 'package:flutter/material.dart';
 
 List<Widget> pages = [const AI(), const WebViewHome(), const Shared()];
 

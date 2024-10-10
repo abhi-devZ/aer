@@ -1,4 +1,3 @@
-import 'package:aer/UI/utils/constant.dart';
 import 'package:flutter/material.dart';
 
 typedef AnimationCompleteCallback = void Function(bool value);

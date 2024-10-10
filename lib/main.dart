@@ -1,14 +1,12 @@
+import 'package:aer/UI/testing-1/dashboard.dart';
 import 'package:aer/bloc/appStartsCubit/app_starts_cubit.dart';
 import 'package:aer/bloc/webViewBloc/web_view_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'UI/screen/aer_home_page.dart';
 import 'UI/utils/constant.dart';
 import 'app_routes.dart';
-
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,9 +15,7 @@ void main() {
     statusBarIconBrightness: Brightness.light, // Light icons for dark gradient
     statusBarBrightness: Brightness.dark, // Dark background (iOS)
   ));
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual,overlays: [SystemUiOverlay.top]
-  );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
   runApp(const MyApp());
 }
 
@@ -31,8 +27,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late SharedPreferences _prefs;
-
   @override
   void initState() {
     // TODO: implement initState
@@ -75,6 +69,4 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
-
 }
-

@@ -1,6 +1,5 @@
 import 'package:aer/UI/Widget/search_box.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 class WidgetTestPage extends StatelessWidget {
   const WidgetTestPage({super.key});

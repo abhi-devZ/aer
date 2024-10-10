@@ -2,16 +2,18 @@ import 'package:aer/UI/screen-2/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+//GLOBAL
+List<Widget> tabs = [];
+int currentIndex = 0;
+
 class BrowserTabManager extends StatefulWidget {
-  const BrowserTabManager({Key? key}) : super(key: key);
+  const BrowserTabManager({super.key});
 
   @override
   State<BrowserTabManager> createState() => _BrowserTabManagerState();
 }
 
 class _BrowserTabManagerState extends State<BrowserTabManager> {
-  List<HomePage> tabs = [];
-  int currentIndex = 0;
   bool showTabGrid = false;
 
   @override
@@ -22,7 +24,7 @@ class _BrowserTabManagerState extends State<BrowserTabManager> {
 
   void _addNewTab() {
     setState(() {
-      tabs.add(HomePage(
+      tabs.add(BrowserTab(
         key: UniqueKey(),
         onUpdateTitle: (title) {
           setState(() {});
@@ -120,8 +122,7 @@ class _BrowserTabManagerState extends State<BrowserTabManager> {
             ),
             Expanded(
               child: Center(
-                child: Text(
-                  tabs[index].title ?? 'New Tab',
+                child: Text( 'New Tab',
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

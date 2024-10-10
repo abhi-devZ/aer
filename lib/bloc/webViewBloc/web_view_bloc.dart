@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aer/UI/utils/constant.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 part 'web_view_event.dart';
 

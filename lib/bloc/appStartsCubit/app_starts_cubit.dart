@@ -1,6 +1,5 @@
 import 'package:aer/app_routes.dart';
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'app_starts_state.dart';
