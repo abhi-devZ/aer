@@ -1,7 +1,10 @@
 import 'dart:developer';
 
+import 'package:aer/UI/screen-2/tab_grid.dart';
+import 'package:aer/UI/testing-1/web_view_screen.dart';
 import 'package:aer/UI/utils/constant.dart';
 import 'package:aer/UI/utils/random_color.dart';
+import 'package:aer/services/tab_service.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -13,16 +16,10 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin {
-  int _currentIndex = 0;
-
-  List<Widget> tabList = [];
-  bool showTabs = false;
-
-
   @override
   void initState() {
     super.initState();
-    tabList.add(const Page());
+    TabService().tabList.add(const WebViewScreen());
   }
 
   @override
@@ -31,48 +28,13 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     return SafeArea(
       top: true,
       child: Scaffold(
-        body: showTabs
-            ? _tabBuilder()
+        body: TabService().showTabs
+            ? TabGrid()
             : IndexedStack(
-                index: _currentIndex,
-                children: tabList,
+                index: TabService().currentIndex,
+                children: TabService().tabList,
               ),
         bottomNavigationBar: _bottomNavBar(),
-      ),
-    );
-  }
-
-  Widget _tabBuilder() {
-    return Container(
-      color: Colors.white,
-      child: GridView.builder(
-        padding: const EdgeInsets.all(8),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.8,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
-        itemCount: tabList.length,
-        itemBuilder: (context, index) => Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                _currentIndex = index;
-                showTabs = false;
-              });
-              log("on Pressed $index");
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Container(color: Colors.cyanAccent, child: tabList[index]),
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -84,17 +46,17 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
       children: [
         IconButton(
           onPressed: () {
-            tabList.add(const Page());
-            _currentIndex = tabList.length - 1;
-            showTabs = false;
-            setState(() {});
+            setState(() {
+              TabService().tabList.add(const WebViewScreen());
+              TabService().setCurrentIndex(TabService().tabList.length - 1);
+            });
           },
           icon: const Icon(Icons.add),
         ),
         IconButton(
           onPressed: () {
             setState(() {
-              showTabs = !showTabs;
+              TabService().toggleTabs();
             });
           },
           icon: const Icon(Icons.menu),
@@ -134,7 +96,6 @@ bool checkFormat(String url) {
 }
 
 class Page extends StatefulWidget {
-
   const Page({super.key});
 
   @override
@@ -156,6 +117,7 @@ class _PageState extends State<Page> {
         ),
       );
   }
+
   @override
   Widget build(BuildContext context) {
     return Stack(

@@ -43,9 +43,33 @@ class CustomWebViewController {
     );
   }
 
+  Future<void> injectViewportMeta() async {
+    // JavaScript to adjust viewport and scale content
+    const String javascript = '''
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=400, initial-scale=0.5, maximum-scale=1.0, user-scalable=no';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+      
+      // Additional styling to ensure content fits
+      document.body.style.width = '400px';
+      document.body.style.margin = '0';
+      document.body.style.padding = '0';
+      document.documentElement.style.overflow = 'auto';
+      
+      // Force layout recalculation
+      document.body.style.display = 'none';
+      document.body.offsetHeight;
+      document.body.style.display = 'block';
+    ''';
+
+    await _controller?.runJavaScript(javascript);
+  }
+
+
   Widget buildWebView() {
     return _controller != null
-        ? WebViewWidget(controller: _controller!)
+        ?  WebViewWidget(controller: _controller!)
         : const SizedBox();
   }
 

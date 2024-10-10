@@ -350,7 +350,7 @@ class _SearchWidgetState extends State<SearchWidget> {
 
 class TabData {
   final Key key = UniqueKey();
-  late final BrowserTab tab;
+  BrowserTab tab;
   String? thumbnail;
   String? currentUrl;
 

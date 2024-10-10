@@ -15,6 +15,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   late final CustomSnapshotController _snapshotController;
   late final HistoryController _historyController;
   bool isLoading = true;
+  bool isInitCompleted = false;
 
   @override
   void initState() {
@@ -30,7 +31,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
       onPageStarted: _handlePageStarted,
       onPageFinished: _handlePageFinished,
     );
-    setState(() {});
+    setState(() {
+      isInitCompleted = true;
+    });
   }
 
   void _handlePageStarted(String url) {
@@ -39,6 +42,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   void _handlePageFinished(String url) async {
     await _historyController.addToHistory(url);
+    _webViewController.injectViewportMeta();
     setState(() => isLoading = false);
   }
 
@@ -54,36 +58,47 @@ class _WebViewScreenState extends State<WebViewScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: _webViewController.goBack,
+            onPressed: () {
+              _webViewController.goBack;
+            },
           ),
           IconButton(
             icon: const Icon(Icons.arrow_forward),
-            onPressed: _webViewController.goForward,
+            onPressed: () {
+              _webViewController.goForward();
+            },
           ),
           IconButton(
             icon: const Icon(Icons.history),
-            onPressed: () => _historyController.showHistoryDialog(
-              context,
-              _webViewController.loadUrl,
-            ),
+            onPressed: () {
+              _historyController.showHistoryDialog(
+                context,
+                _webViewController.loadUrl,
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: _webViewController.reload,
+            onPressed: () {
+              _webViewController.reload();
+            },
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          RepaintBoundary(
-            key: _snapshotController.webViewKey,
-            child: _webViewController.buildWebView(),
-          ),
-          if (isLoading)
-            const Center(child: CircularProgressIndicator()),
-          _snapshotController.buildSnapshotWindow(context),
-        ],
-      ),
+      body: isInitCompleted
+          ? Stack(
+              children: [
+                RepaintBoundary(
+                  key: _snapshotController.webViewKey,
+                  child: _webViewController.buildWebView(),
+                ),
+                if (isLoading) const Center(child: CircularProgressIndicator()),
+                _snapshotController.buildSnapshotWindow(context),
+              ],
+            )
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 

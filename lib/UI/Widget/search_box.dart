@@ -83,13 +83,12 @@ class _SearchBoxState extends State<SearchBox> {
   }
   @override
   void dispose() {
-    _controller?.dispose();
+    // _controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    updateState();
     updateSearchQuery();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
